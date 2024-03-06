@@ -12,8 +12,6 @@ const SignOutForm = () => {
             redirect: true,
             redirectTo: DEFAULT_SIGNOUT_REDIRECT,
           })
-        } catch(err) {
-          
         } finally {
           await signOut({ redirectTo: DEFAULT_SIGNOUT_REDIRECT })
         }

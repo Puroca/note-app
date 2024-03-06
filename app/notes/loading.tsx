@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const Loading = () => {
     return (
-        <Skeleton className="w-[700px] h-[300px] " />
+        <Skeleton className="w-[500px] h-[200px] " />
     );
 }
 
