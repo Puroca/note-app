@@ -14,19 +14,21 @@ import {
 import { Input } from '@/components/ui/input'
 import { loginSchema } from '@/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter} from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { redirectTo } from '../redirector'
+import FormError from '@/app/components/FormError'
+import FormSucces from '@/app/components/FormSucces'
+import { AuthError } from 'next-auth'
 
 const LoginForm = () => {
   const [isLoading, setisLoading] = useState(false)
   const [error, seterror] = useState('')
-  const [success, setsuccess] = useState()
+  const [success, setsuccess] = useState('')
+  const router = useRouter()
 
-
-  
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -36,17 +38,27 @@ const LoginForm = () => {
   })
 
   const loginSubmit = async (values: z.infer<typeof loginSchema>) => {
+    seterror('')
+    setsuccess('')
     const validValues = loginSchema.safeParse(values)
-    if (validValues.success) {
-      setisLoading(true)
-      await login(validValues.data)
-        .then(() => {          
-          
-        })
-        .catch(() => {})
+    if (!validValues.success) {
+      return seterror('Invalid fields')
     }
+    setisLoading(true)
+    await login(validValues.data)
+      .then((res) => {
+        setisLoading(false)
+        if (res && !res.success) {
+          return seterror(res.message)
+        }
 
-    return seterror('Invalid fields')
+        setsuccess('Compte créé avec succès.')
+        router.refresh()
+      })
+      .catch(() => {
+        setisLoading(false)
+        return seterror('Something went wrong!')
+      })
   }
   return (
     <AuthCard
@@ -66,6 +78,7 @@ const LoginForm = () => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
+                    disabled={isLoading}
                     type="text"
                     placeholder="john@example.com"
                     {...field}
@@ -83,14 +96,24 @@ const LoginForm = () => {
               <FormItem>
                 <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="******" {...field} />
+                  <Input
+                    disabled={isLoading}
+                    type="password"
+                    placeholder="******"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <Button type="submit" className="bg-green-500 w-full">
+          <FormError message={error} />
+          <FormSucces message={success} />
+          <Button
+            disabled={isLoading}
+            type="submit"
+            className="bg-green-500 w-full"
+          >
             Se connecter
           </Button>
         </form>

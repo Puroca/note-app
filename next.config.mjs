@@ -8,6 +8,12 @@ const nextConfig = {
 
     return config
   },
+
+  experimental:{
+    serverActions:{
+      allowedOrigins: ['the-sits.com', 'localhost:3000']
+    }
+  }
 }
 
 export default nextConfig;

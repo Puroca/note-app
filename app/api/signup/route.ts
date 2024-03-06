@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const POST = async (req: Request) => {
   const data = await req.json()
-  if (data && data.user) {
-    const { name, email, password } = data.user
+  if (!!data) {
+    const { name, email, password } = data
     dbConnect()
     const existingUser = await User.findOne({ email: email })
     if (!existingUser) {
@@ -36,11 +36,19 @@ export const POST = async (req: Request) => {
         { status: 201 }
       )
     }
+
+    return NextResponse.json(
+      {
+        message: 'Cet utilisateur exist déjà.',
+        success: false,
+      },
+      { status: 400 }
+    )
   }
 
   return NextResponse.json(
     {
-      message: 'Création de compte échouée.',
+      message: 'No data to save.',
       success: false,
     },
     { status: 400 }

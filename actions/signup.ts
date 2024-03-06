@@ -13,7 +13,7 @@ export const signup = async (data: z.infer<typeof signUpSchema>) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user }),
+      body: JSON.stringify(user),
     })
 
     const response = await res.json()

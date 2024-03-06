@@ -5,7 +5,6 @@ import NextAuth, { NextAuthConfig } from 'next-auth'
 import { dbConnect } from './lib/dbconnect'
 import { User } from '@/models/UserModel'
 
-
 export const authConfig = {
   providers: [
     CredentialsProvider({
@@ -38,26 +37,28 @@ export const authConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: any ) {
-      if(user){
-        token._id = user._id 
+    async jwt({ token, user }: any) {
+      if (user) {
+        token._id = user._id
         token.name = user.name
         token.email = user.email
       }
       return token
     },
 
-    async session({token, session}:any){
+    async session({ token, session }: any) {
       session.user._id = token._id
       session.token = token
       return session
-    }
+    },
   },
 
   pages: {
-    signIn: '/auth/login'
+    signIn: '/auth/login',
   },
 
+  secret: process.env.NEXTAUTH_SECRET,
+  
   session: { strategy: 'jwt' },
 } satisfies NextAuthConfig
 
