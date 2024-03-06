@@ -1,5 +1,5 @@
-import { signOut } from '../../auth'
-import { DEFAULT_SIGNOUT_REDIRECT } from '../../routes'
+import { signOut } from '@/auth'
+import { DEFAULT_SIGNOUT_REDIRECT } from '@/routes'
 
 const SignOutForm = () => {
   return (
@@ -12,10 +12,9 @@ const SignOutForm = () => {
             redirect: true,
             redirectTo: DEFAULT_SIGNOUT_REDIRECT,
           })
-        } catch (error) {
-          error
+        } catch(err) {
+          
         } finally {
-            console.log(20000);
           await signOut({ redirectTo: DEFAULT_SIGNOUT_REDIRECT })
         }
       }}
